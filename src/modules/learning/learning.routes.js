@@ -1,31 +1,31 @@
-import * as learningService from './learning.service.js';
+import { Router } from 'express';
+import * as learningController from './learning.controller.js';
+import { validate } from '../../middlewares/validate.js';
+import { requireAuth } from '../../middlewares/authMiddleware.js';
+import {
+    startQuestionSchema,
+    submitQuestionSchema,
+    completeLevelSchema,
+} from './learning.schema.js';
 
-export async function startQuestion(req, res, next) {
-    try {
-        const { levelId, questionId } = req.validated.params;
-        const result = await learningService.startQuestion(req.userId, levelId, questionId);
-        res.status(200).json({ success: true, data: result });
-    } catch (err) {
-        next(err);
-    }
-}
+const router = Router();
 
-export async function submitQuestion(req, res, next) {
-    try {
-        const { levelId, questionId } = req.validated.params;
-        const result = await learningService.submitQuestion(req.userId, levelId, questionId, req.validated.body);
-        res.status(200).json({ success: true, data: result });
-    } catch (err) {
-        next(err);
-    }
-}
+router.use(requireAuth);
 
-export async function completeLevel(req, res, next) {
-    try {
-        const { levelId } = req.validated.params;
-        const result = await learningService.completeLevel(req.userId, levelId);
-        res.status(200).json({ success: true, data: result });
-    } catch (err) {
-        next(err);
-    }
-}
+router.post(
+    '/:levelId/questions/:questionId/start',
+    validate(startQuestionSchema),
+    learningController.startQuestion
+);
+router.post(
+    '/:levelId/questions/:questionId/submit',
+    validate(submitQuestionSchema),
+    learningController.submitQuestion
+);
+router.post(
+    '/:levelId/complete',
+    validate(completeLevelSchema),
+    learningController.completeLevel
+);
+
+export default router;
