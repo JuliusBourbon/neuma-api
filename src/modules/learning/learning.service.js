@@ -1,5 +1,6 @@
 import { prisma } from '../../db/prismaClient.js';
 import { ApiError } from '../../utils/ApiError.js';
+import { syncQuestProgress, incrementQuestProgress } from '../quests/questProgress.service.js';
 
 const TIME_TOLERANCE_SECONDS = 2;
 
@@ -189,6 +190,12 @@ export async function completeLevel(userId, levelId) {
                 },
             });
         }
+
+        await incrementQuestProgress(userId, 'levels_completed');
+
+        if (scorePercentage === 100) {
+            await incrementQuestProgress(userId, 'perfect_scores');
+        }
     }
 
     const stats = await updateStatsAfterSession(userId, level, correctCount);
@@ -223,7 +230,7 @@ async function updateStatsAfterSession(userId, level, correctCount) {
 
     const cameraQuestionCount = level.questions.filter((q) => q.type === 'camera_practice').length;
 
-    return prisma.userStats.update({
+    const updatedStats = await prisma.userStats.update({
         where: { userId },
         data: {
             dayStreak: newStreak,
@@ -231,4 +238,9 @@ async function updateStatsAfterSession(userId, level, correctCount) {
             wordsCollected: { increment: Math.min(correctCount, cameraQuestionCount) },
         },
     });
+
+    await syncQuestProgress(userId, 'streak_days', updatedStats.dayStreak);
+    await syncQuestProgress(userId, 'words_collected', updatedStats.wordsCollected);
+
+    return updatedStats;
 }
