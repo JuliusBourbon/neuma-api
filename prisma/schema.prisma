@@ -1,13 +1,208 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
+  // url      = env("DATABASE_URL")
+}
+
+// ENUMS
+
+enum Gender {
+  male
+  female
+  other
+  prefer_not_to_say
+}
+
+enum Language {
+  id
+  en
+}
+
+enum ProgressStatus {
+  locked
+  available
+  completed
+}
+
+enum QuestionType {
+  multiple_choice
+  true_false
+  camera_practice
+}
+
+enum QuestStatus {
+  in_progress
+  achieved
+  claimed
+}
+
+enum QuestTargetType {
+  levels_completed
+  streak_days
+  words_collected
+  perfect_scores
+}
+
+enum AttemptStatus {
+  pending
+  answered
+  timeout
+}
+
+// MODELS
+
+model User {
+  id                  String    @id @default(uuid())
+  email               String    @unique
+  passwordHash        String?   @map("password_hash")
+  username            String?
+  googleId            String?   @unique @map("google_id")
+  activeAvatarId      String?   @map("active_avatar_id")
+  activeAvatar        ShopItem? @relation(fields: [activeAvatarId], references: [id])
+  preferredLanguage   Language  @default(id) @map("preferred_language")
+  age                 Int?
+  gender              Gender?
+  onboardingCompleted Boolean   @default(false) @map("onboarding_completed")
+  createdAt           DateTime  @default(now()) @map("created_at")
+
+  stats            UserStats?
+  progress         UserProgress[]
+  quests           UserQuest[]
+  inventory        UserInventory[]
+  questionAttempts QuestionAttempt[]
+
+  @@map("users")
+}
+
+model UserStats {
+  userId          String    @id @map("user_id")
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  totalXp         Int       @default(0) @map("total_xp")
+  currencyBalance Int       @default(0) @map("currency_balance")
+  dayStreak       Int       @default(0) @map("day_streak")
+  lastActiveDate  DateTime? @map("last_active_date") @db.Date
+  wordsCollected  Int       @default(0) @map("words_collected")
+
+  @@index([totalXp])
+  @@map("user_stats")
+}
+
+model Level {
+  id                   String @id @default(uuid())
+  orderIndex           Int    @map("order_index")
+  title                Json // { "id": "...", "en": "..." }
+  description          Json
+  minScoreToUnlockNext Int    @map("min_score_to_unlock_next")
+
+  materials LevelMaterial[]
+  questions LevelQuestion[]
+  progress  UserProgress[]
+
+  @@map("levels")
+}
+
+model LevelMaterial {
+  id          String  @id @default(uuid())
+  levelId     String  @map("level_id")
+  level       Level   @relation(fields: [levelId], references: [id], onDelete: Cascade)
+  contentText Json    @map("content_text") // { "id": "...", "en": "..." }
+  mediaUrl    String? @map("media_url")
+  orderIndex  Int     @map("order_index")
+
+  @@map("level_materials")
+}
+
+model LevelQuestion {
+  id               String       @id @default(uuid())
+  levelId          String       @map("level_id")
+  level            Level        @relation(fields: [levelId], references: [id], onDelete: Cascade)
+  type             QuestionType
+  questionText     Json         @map("question_text") // { "id": "...", "en": "..." }
+  options          Json? // { choices: [{ key, id, en, image_url }] }
+  correctAnswer    String       @map("correct_answer")
+  mediaUrl         String?      @map("media_url")
+  timeLimitSeconds Int?         @map("time_limit_seconds")
+
+  attempts QuestionAttempt[]
+
+  @@map("level_questions")
+}
+
+model QuestionAttempt {
+  id          String        @id @default(uuid())
+  userId      String        @map("user_id")
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  questionId  String        @map("question_id")
+  question    LevelQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  startedAt   DateTime      @default(now()) @map("started_at")
+  submittedAt DateTime?     @map("submitted_at")
+  status      AttemptStatus @default(pending)
+
+  @@index([userId, questionId])
+  @@map("question_attempts")
+}
+
+model UserProgress {
+  id          String         @id @default(uuid())
+  userId      String         @map("user_id")
+  user        User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  levelId     String         @map("level_id")
+  level       Level          @relation(fields: [levelId], references: [id], onDelete: Cascade)
+  status      ProgressStatus @default(locked)
+  bestScore   Int            @default(0) @map("best_score")
+  completedAt DateTime?      @map("completed_at")
+
+  @@unique([userId, levelId])
+  @@map("user_progress")
+}
+
+model Quest {
+  id             String          @id @default(uuid())
+  title          Json // { "id": "...", "en": "..." }
+  description    Json
+  targetType     QuestTargetType @map("target_type")
+  targetValue    Int             @map("target_value")
+  rewardCurrency Int             @map("reward_currency")
+
+  userQuests UserQuest[]
+
+  @@map("quests")
+}
+
+model UserQuest {
+  userId          String      @map("user_id")
+  user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  questId         String      @map("quest_id")
+  quest           Quest       @relation(fields: [questId], references: [id], onDelete: Cascade)
+  currentProgress Int         @default(0) @map("current_progress")
+  status          QuestStatus @default(in_progress)
+
+  @@id([userId, questId])
+  @@map("user_quests")
+}
+
+model ShopItem {
+  id       String @id @default(uuid())
+  name     Json // { "id": "...", "en": "..." }
+  imageUrl String @map("image_url")
+  price    Int
+
+  inventoryOf UserInventory[]
+  activeUsers User[]
+
+  @@map("shop_items")
+}
+
+model UserInventory {
+  userId      String   @map("user_id")
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  shopItemId  String   @map("shop_item_id")
+  shopItem    ShopItem @relation(fields: [shopItemId], references: [id], onDelete: Cascade)
+  purchasedAt DateTime @default(now()) @map("purchased_at")
+
+  @@id([userId, shopItemId])
+  @@map("user_inventory")
 }
