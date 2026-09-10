@@ -11,6 +11,7 @@ import levelRoutes from './modules/levels/levels.routes.js';
 import learningRoutes from './modules/learning/learning.routes.js';
 import leaderboardRoutes from './modules/leaderboard/leaderboard.routes.js';
 import questRoutes from './modules/quests/quests.routes.js';
+import shopRoutes from './modules/shop/shop.routes.js';
 
 dotenv.config();
 
@@ -36,6 +37,7 @@ app.use('/api/levels', levelRoutes);
 app.use('/api/learning', learningRoutes);
 app.use('/api/leaderboard', leaderboardRoutes);
 app.use('/api/quests', questRoutes);
+app.use('/api/shop', shopRoutes);
 
 app.use(notFoundHandler);
 app.use(errorHandler);
