@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 import { errorHandler, notFoundHandler } from './middlewares/errorHandler.js';
 import { globalRateLimiter } from './middlewares/rateLimiter.js';
 import authRoutes from './modules/auth/auth.routes.js';
+import userRoutes from './modules/users/users.routes.js';
 
 dotenv.config();
 
@@ -26,6 +27,7 @@ app.get('/api/health', (req, res) => {
 
 // Route
 app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
 
 app.use(notFoundHandler);
 app.use(errorHandler);
