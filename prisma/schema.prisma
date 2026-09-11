@@ -140,6 +140,7 @@ model QuestionAttempt {
   startedAt   DateTime      @default(now()) @map("started_at")
   submittedAt DateTime?     @map("submitted_at")
   status      AttemptStatus @default(pending)
+  isCorrect   Boolean       @default(false) @map("is_correct")
 
   @@index([userId, questionId])
   @@map("question_attempts")

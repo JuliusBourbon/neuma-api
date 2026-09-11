@@ -89,6 +89,7 @@ export async function submitQuestion(userId, levelId, questionId, payload) {
         data: {
             submittedAt: now,
             status: isTimeout ? 'timeout' : 'answered',
+            isCorrect,
         },
     });
 
@@ -137,12 +138,15 @@ export async function completeLevel(userId, levelId) {
     }
 
     let correctCount = 0;
-    let totalXp = 0;
+    let correctCameraCount = 0;
 
     for (const question of level.questions) {
         const attempt = latestAttemptPerQuestion.get(question.id);
-        if (attempt && attempt.status === 'answered') {
+        if (attempt && attempt.status === 'answered' && attempt.isCorrect) {
             correctCount += 1;
+            if (question.type === 'camera_practice') {
+                correctCameraCount += 1;
+            }
         }
     }
 
@@ -156,6 +160,7 @@ export async function completeLevel(userId, levelId) {
         where: { userId_levelId: { userId, levelId } },
     });
 
+    const isFirstPass = isPassed && existingProgress?.status !== 'completed';
     const bestScore = Math.max(scorePercentage, existingProgress?.bestScore ?? 0);
 
     await prisma.userProgress.upsert({
@@ -163,7 +168,7 @@ export async function completeLevel(userId, levelId) {
         update: {
             status: isPassed ? 'completed' : (existingProgress?.status ?? 'available'),
             bestScore,
-            completedAt: isPassed ? new Date() : existingProgress?.completedAt,
+            completedAt: isPassed ? (existingProgress?.completedAt ?? new Date()) : existingProgress?.completedAt,
         },
         create: {
             userId,
@@ -191,14 +196,16 @@ export async function completeLevel(userId, levelId) {
             });
         }
 
-        await incrementQuestProgress(userId, 'levels_completed');
+        if (isFirstPass) {
+            await incrementQuestProgress(userId, 'levels_completed');
+        }
 
-        if (scorePercentage === 100) {
+        if (scorePercentage === 100 && (!existingProgress || existingProgress.bestScore < 100)) {
             await incrementQuestProgress(userId, 'perfect_scores');
         }
     }
 
-    const stats = await updateStatsAfterSession(userId, level, correctCount);
+    const stats = await updateStatsAfterSession(userId, level, correctCameraCount, isFirstPass);
 
     return {
         scorePercentage,
@@ -209,7 +216,7 @@ export async function completeLevel(userId, levelId) {
     };
 }
 
-async function updateStatsAfterSession(userId, level, correctCount) {
+async function updateStatsAfterSession(userId, level, correctCameraCount, isFirstPass) {
     const stats = await prisma.userStats.findUnique({ where: { userId } });
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -228,14 +235,14 @@ async function updateStatsAfterSession(userId, level, correctCount) {
         }
     }
 
-    const cameraQuestionCount = level.questions.filter((q) => q.type === 'camera_practice').length;
+    const wordsIncrement = isFirstPass ? correctCameraCount : 0;
 
     const updatedStats = await prisma.userStats.update({
         where: { userId },
         data: {
             dayStreak: newStreak,
             lastActiveDate: today,
-            wordsCollected: { increment: Math.min(correctCount, cameraQuestionCount) },
+            ...(wordsIncrement > 0 && { wordsCollected: { increment: wordsIncrement } }),
         },
     });
 
