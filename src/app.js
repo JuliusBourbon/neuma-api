@@ -1,7 +1,7 @@
+import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-import dotenv from 'dotenv';
 
 import { errorHandler, notFoundHandler } from './middlewares/errorHandler.js';
 import { globalRateLimiter } from './middlewares/rateLimiter.js';
@@ -13,7 +13,6 @@ import leaderboardRoutes from './modules/leaderboard/leaderboard.routes.js';
 import questRoutes from './modules/quests/quests.routes.js';
 import shopRoutes from './modules/shop/shop.routes.js';
 
-dotenv.config();
 
 const app = express();
 
