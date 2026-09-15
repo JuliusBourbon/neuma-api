@@ -49,8 +49,8 @@ export async function login(req, res, next) {
 
 export async function googleAuth(req, res, next) {
     try {
-        const { idToken } = req.validated.body;
-        const { user, tokens } = await authService.loginOrRegisterWithGoogle({ idToken });
+        const { idToken, accessToken } = req.validated.body;
+        const { user, tokens } = await authService.loginOrRegisterWithGoogle({ idToken, accessToken });
 
         setRefreshCookie(res, tokens.refreshToken);
         res.status(200).json({

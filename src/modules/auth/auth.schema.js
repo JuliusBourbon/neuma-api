@@ -21,7 +21,10 @@ export const loginSchema = z.object({
 
 export const googleAuthSchema = z.object({
     body: z.object({
-        idToken: z.string().min(1, 'Google ID token wajib disertakan.'),
+        idToken: z.string().optional(),
+        accessToken: z.string().optional(),
+    }).refine((data) => Boolean(data.idToken || data.accessToken), {
+        message: 'Google ID token atau access token wajib disertakan.',
     }),
     query: z.object({}).optional(),
     params: z.object({}).optional(),

@@ -51,19 +51,53 @@ export async function loginUser({ email, password }) {
     return { user, tokens: buildTokens(user) };
 }
 
-export async function loginOrRegisterWithGoogle({ idToken }) {
-    let payload;
-    try {
-        const ticket = await googleClient.verifyIdToken({
-            idToken,
-            audience: process.env.GOOGLE_CLIENT_ID,
-        });
-        payload = ticket.getPayload();
-    } catch {
-        throw new ApiError(401, 'Google ID token tidak valid.');
+export async function loginOrRegisterWithGoogle({ idToken, accessToken }) {
+    let googleId;
+    let email;
+
+    if (accessToken) {
+        try {
+            const tokenInfo = await googleClient.getTokenInfo(accessToken);
+
+            if (process.env.GOOGLE_CLIENT_ID && tokenInfo.aud !== process.env.GOOGLE_CLIENT_ID) {
+                throw new Error('Google token audience mismatch.');
+            }
+
+            googleId = tokenInfo.sub || tokenInfo.user_id;
+            email = tokenInfo.email;
+
+            if (!googleId || !email) {
+                const userinfoRes = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+                    headers: { Authorization: `Bearer ${accessToken}` },
+                });
+                if (userinfoRes.ok) {
+                    const profile = await userinfoRes.json();
+                    googleId = googleId || profile.sub;
+                    email = email || profile.email;
+                }
+            }
+        } catch {
+            throw new ApiError(401, 'Google access token tidak valid.');
+        }
+    } else if (idToken) {
+        try {
+            const ticket = await googleClient.verifyIdToken({
+                idToken,
+                audience: process.env.GOOGLE_CLIENT_ID,
+            });
+            const payload = ticket.getPayload();
+            googleId = payload.sub;
+            email = payload.email;
+        } catch {
+            throw new ApiError(401, 'Google ID token tidak valid.');
+        }
+    } else {
+        throw new ApiError(400, 'Google access token atau ID token diperlukan.');
     }
 
-    const { sub: googleId, email } = payload;
+    if (!googleId || !email) {
+        throw new ApiError(400, 'Informasi akun Google tidak lengkap.');
+    }
 
     let user = await prisma.user.findUnique({ where: { googleId } });
 
