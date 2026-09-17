@@ -43,9 +43,12 @@ function evaluateAnswer(question, payload) {
     }
 
     if (question.type === 'camera_practice') {
-        const { detectedLetter, confidence } = payload;
+        const { detectedLetter, spelledWord, confidence } = payload;
+        const rawAnswer = spelledWord || detectedLetter || '';
+        const cleanAnswer = String(rawAnswer).replace(/[-\s]/g, '').toUpperCase();
+        const cleanCorrect = String(question.correctAnswer || '').replace(/[-\s]/g, '').toUpperCase();
         return (
-            detectedLetter?.toUpperCase() === question.correctAnswer.toUpperCase() &&
+            cleanAnswer === cleanCorrect &&
             (confidence ?? 0) >= CAMERA_CONFIDENCE_THRESHOLD
         );
     }

@@ -24,7 +24,7 @@ async function main() {
     console.log('Data ready to test:');
     console.log('1. Shop Items : 4 Avatars');
     console.log('2. Quests     : 5 Missions (levels, streak, words, perfect)');
-    console.log('3. Levels     : Level 1 (Letters A-C) & Level 2 (Letters D-F)');
+    console.log('3. Levels     : 10 Levels (Huruf A s/d J, 1 huruf per level)');
     console.log('4. Users      : 6 Dummy Users (Password: password123)');
 }
 

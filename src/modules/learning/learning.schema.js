@@ -13,6 +13,7 @@ export const submitQuestionSchema = z.object({
     body: z.object({
         answerKey: z.string().optional(),
         detectedLetter: z.string().optional(),
+        spelledWord: z.string().optional(),
         confidence: z.number().min(0).max(1).optional(),
     }),
     query: z.object({}).optional(),

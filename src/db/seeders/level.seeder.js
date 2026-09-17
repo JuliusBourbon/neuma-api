@@ -84,12 +84,15 @@ export async function seedLevels() {
                     {
                         type: 'camera_practice',
                         questionText: {
-                            id: "Peragakan kembali huruf 'A' di depan kamera dengan stabil.",
-                            en: "Show letter 'A' in front of camera again steadily.",
+                            id: "Eja rangkaian kartu huruf 'A-A-A' di depan kamera dengan memperagakan setiap huruf secara berurutan.",
+                            en: "Spell the letter cards 'A-A-A' in front of the camera by signing each letter in sequence.",
                         },
-                        options: null,
-                        correctAnswer: 'A',
-                        timeLimitSeconds: 25,
+                        options: {
+                            mode: 'spelling',
+                            letters: ['A', 'A', 'A'],
+                        },
+                        correctAnswer: 'AAA',
+                        timeLimitSeconds: 45,
                         mediaUrl: defaultMediaUrl,
                     },
                 ],
@@ -907,13 +910,22 @@ export async function seedLevels() {
             level = await prisma.level.create({ data });
             console.log(`   [+] Level ${data.orderIndex} (${data.title.id}) added.`);
         } else {
-            // Update title, description, and re-create materials and questions if needed
+            // Clean up old materials & questions so they are replaced cleanly with the new single-letter data
+            await prisma.levelMaterial.deleteMany({
+                where: { levelId: level.id },
+            });
+            await prisma.levelQuestion.deleteMany({
+                where: { levelId: level.id },
+            });
+
             level = await prisma.level.update({
                 where: { id: level.id },
                 data: {
                     title: data.title,
                     description: data.description,
                     minScoreToUnlockNext: data.minScoreToUnlockNext,
+                    materials: data.materials,
+                    questions: data.questions,
                 },
             });
             console.log(`   [*] Level ${data.orderIndex} (${data.title.id}) updated.`);
