@@ -54,13 +54,46 @@ export async function completeOnboarding(userId) {
 }
 
 export async function getUserStats(userId) {
-    const stats = await prisma.userStats.findUnique({
+    let stats = await prisma.userStats.findUnique({
         where: { userId },
+        include: {
+            user: {
+                select: {
+                    username: true,
+                    activeAvatar: {
+                        select: { id: true, name: true, imageUrl: true },
+                    },
+                },
+            },
+        },
     });
 
     if (!stats) {
-        throw new ApiError(404, 'Statistik user tidak ditemukan.');
+        stats = await prisma.userStats.create({
+            data: { userId },
+            include: {
+                user: {
+                    select: {
+                        username: true,
+                        activeAvatar: {
+                            select: { id: true, name: true, imageUrl: true },
+                        },
+                    },
+                },
+            },
+        });
     }
 
-    return stats;
+    const higherCount = await prisma.userStats.count({
+        where: { totalXp: { gt: stats.totalXp } },
+    });
+
+    const { user, ...cleanStats } = stats;
+
+    return {
+        ...cleanStats,
+        rank: higherCount + 1,
+        avatar: user?.activeAvatar?.imageUrl || null,
+        username: user?.username || null,
+    };
 }
