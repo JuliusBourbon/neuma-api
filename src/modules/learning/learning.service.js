@@ -240,15 +240,22 @@ async function updateStatsAfterSession(userId, level, correctCameraCount, isFirs
     }
 
     const LEVEL_COMPLETION_COINS = 10;
-    const wordsIncrement = isFirstPass ? correctCameraCount : 0;
     const coinsIncrement = isFirstPass ? LEVEL_COMPLETION_COINS : 0;
+
+    const completedLearningLevelsCount = await prisma.userProgress.count({
+        where: {
+            userId,
+            status: 'completed',
+            level: { type: 'learning' },
+        },
+    });
 
     const updatedStats = await prisma.userStats.update({
         where: { userId },
         data: {
             dayStreak: newStreak,
             lastActiveDate: today,
-            ...(wordsIncrement > 0 && { wordsCollected: { increment: wordsIncrement } }),
+            wordsCollected: completedLearningLevelsCount,
             ...(coinsIncrement > 0 && { currencyBalance: { increment: coinsIncrement } }),
         },
     });

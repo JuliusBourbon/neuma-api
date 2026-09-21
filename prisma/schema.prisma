@@ -27,6 +27,11 @@ enum ProgressStatus {
   completed
 }
 
+enum LevelType {
+  learning
+  test
+}
+
 enum QuestionType {
   multiple_choice
   true_false
@@ -95,7 +100,8 @@ model Level {
   orderIndex           Int    @map("order_index")
   title                Json // { "id": "...", "en": "..." }
   description          Json
-  minScoreToUnlockNext Int    @map("min_score_to_unlock_next")
+  minScoreToUnlockNext Int      @map("min_score_to_unlock_next")
+  type                 LevelType @default(learning)
 
   materials LevelMaterial[]
   questions LevelQuestion[]
