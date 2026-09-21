@@ -2,7 +2,7 @@ import { prisma } from '../../db/prismaClient.js';
 import { ApiError } from '../../utils/ApiError.js';
 import { syncQuestProgress, incrementQuestProgress } from '../quests/questProgress.service.js';
 
-const TIME_TOLERANCE_SECONDS = 2;
+const TIME_TOLERANCE_SECONDS = 60;
 
 const CAMERA_CONFIDENCE_THRESHOLD = 0.85;
 
@@ -215,6 +215,7 @@ export async function completeLevel(userId, levelId) {
         isPassed,
         correctCount,
         totalQuestions: level.questions.length,
+        coinsEarned: isFirstPass ? 10 : 0,
         stats,
     };
 }
@@ -238,7 +239,9 @@ async function updateStatsAfterSession(userId, level, correctCameraCount, isFirs
         }
     }
 
+    const LEVEL_COMPLETION_COINS = 10;
     const wordsIncrement = isFirstPass ? correctCameraCount : 0;
+    const coinsIncrement = isFirstPass ? LEVEL_COMPLETION_COINS : 0;
 
     const updatedStats = await prisma.userStats.update({
         where: { userId },
@@ -246,6 +249,7 @@ async function updateStatsAfterSession(userId, level, correctCameraCount, isFirs
             dayStreak: newStreak,
             lastActiveDate: today,
             ...(wordsIncrement > 0 && { wordsCollected: { increment: wordsIncrement } }),
+            ...(coinsIncrement > 0 && { currencyBalance: { increment: coinsIncrement } }),
         },
     });
 
