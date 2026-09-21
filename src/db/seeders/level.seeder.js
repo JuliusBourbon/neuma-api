@@ -4,7 +4,7 @@ export async function seedLevels() {
     console.log('[*] Seeding 10 Levels, Materials & Questions...');
     const createdLevels = [];
 
-    const defaultMediaUrl = 'https://res.cloudinary.com/dnn3mm02t/image/upload/v1789374744/1_v2ftdg_llqqmu.png';
+    const defaultMediaUrl = 'https://res.cloudinary.com/dnn3mm02t/image/upload/lsn_a.jpg';
 
     const levelsData = [
         // Level 1: Huruf A
@@ -21,18 +21,26 @@ export async function seedLevels() {
                     {
                         orderIndex: 1,
                         contentText: {
-                            id: 'Ini adalah huruf A dalam BISINDO. Bayangkan kedua tanganmu seperti sedang mengukur sebuah atap rumah berbentuk SEGITIGA.',
-                            en: 'This is the letter A in BISINDO. Imagine your two hands are measuring a triangular roof shape.',
+                            id: 'Ini adalah huruf A dalam BISINDO. Isyarat dibentuk menggunakan kedua belah tangan secara bersamaan dan simetris, saling berhadapan di depan dada',
+                            en: 'This is the letter A in BISINDO. The sign is formed using both hands simultaneously and symmetrically, facing each other in front of the chest.',
                         },
-                        mediaUrl: defaultMediaUrl,
+                        mediaUrl: 'https://res.cloudinary.com/dnn3mm02t/image/upload/lsn_a.jpg',
                     },
                     {
                         orderIndex: 2,
                         contentText: {
-                            id: 'Kedua tangan membentuk SEGITIGA, ujung jari bertemu di depan dada.',
-                            en: 'Both hands form a TRIANGLE shape, with fingertips meeting at the chest.',
+                            id: 'Kedua ujung jari telunjuk saling bersentuhan di bagian atas unuk menjadi puncak huruf "A" dan Kedua ibu jari direntangkan mendatar ke arah dalam dan ujungnya saling menempel di bagian tengah sebagai palang horizonal.',
+                            en: 'The fingertips of both index fingers touch at the top to form the peak of the letter "A". The two thumbs are extended horizontally inward, with their tips touching in the middle to form a horizontal bar.',
                         },
-                        mediaUrl: defaultMediaUrl,
+                        mediaUrl: 'https://res.cloudinary.com/dnn3mm02t/image/upload/ft_a.jpg',
+                    },
+                    {
+                        orderIndex: 3,
+                        contentText: {
+                            id: 'Pastikan jari tengah, manis, dan kelingking benar benar tertekuk rapat. Jika ikut terbuka, bentuk segitiga "A" menjadi tidak terbaca jelas',
+                            en: 'Ensure the middle, ring, and pinky fingers are tightly bent. If they are also open, the triangle shape of "A" will not be clearly legible.',
+                        },
+                        // mediaUrl: 'https://res.cloudinary.com/dnn3mm02t/image/upload/ft_a.jpg',
                     },
                 ],
             },
@@ -41,30 +49,48 @@ export async function seedLevels() {
                     {
                         type: 'multiple_choice',
                         questionText: {
-                            id: 'Manakah bentuk tangan yang benar untuk memperagakan huruf A?',
-                            en: 'Which handshape is correct for letter A?',
+                            id: 'Manakah deskripsi yang tepat untuk huruf BISINDO A?',
+                            en: 'Which statement accurately describes the BISINDO sign for letter A?',
                         },
                         options: {
                             choices: [
-                                { key: 'a', id: 'Membentuk Segitiga di depan dada', en: 'Forming a Triangle in front of the chest', image_url: null },
-                                { key: 'b', id: 'Membuka kedua tangan tegak lurus', en: 'Opening both hands upright', image_url: null },
-                                { key: 'c', id: 'Melengkungkan jari seperti huruf C', en: 'Curving fingers like letter C', image_url: null },
-                                { key: 'd', id: 'Mengepalkan kedua tangan', en: 'Clenching both hands into fists', image_url: null },
+                                { key: 'a', id: 'Kedua tangan membentuk segitiga di depan dada', en: 'Both hands form a triangle in front of the chest', image_url: null },
+                                { key: 'b', id: 'Kedua tangan membentuk lingkaran di depan dada', en: 'Both hands form a circle in front of the chest', image_url: null },
+                                { key: 'c', id: 'Kedua tangan membentuk kotak di depan dada', en: 'Both hands form a square in front of the chest', image_url: null },
+                                { key: 'd', id: 'Kedua tangan membentuk trapesium di depan dada', en: 'Both hands form a trapezoid in front of the chest', image_url: null },
                             ],
                         },
                         correctAnswer: 'a',
-                        timeLimitSeconds: 30,
+                        timeLimitSeconds: 20,
+                    },
+                    {
+                        type: 'multiple_choice',
+                        questionText: {
+                            id: 'Gambar manakan yang termasuk huruf BISINDO A?',
+                            en: 'Which image is the BISINDO letter A?',
+                        },
+                        options: {
+                            choices: [
+                                { key: 'a', id: '', en: '', image_url: 'https://res.cloudinary.com/dnn3mm02t/image/upload/lsn_d.jpg' },
+                                { key: 'b', id: '', en: '', image_url: 'https://res.cloudinary.com/dnn3mm02t/image/upload/lsn_b.jpg' },
+                                { key: 'c', id: '', en: '', image_url: 'https://res.cloudinary.com/dnn3mm02t/image/upload/lsn_c.jpg' },
+                                { key: 'd', id: '', en: '', image_url: 'https://res.cloudinary.com/dnn3mm02t/image/upload/lsn_a.jpg' },
+                            ],
+                        },
+                        correctAnswer: 'd',
+                        timeLimitSeconds: 20,
                     },
                     {
                         type: 'true_false',
                         questionText: {
-                            id: 'Benar atau salah: Huruf A dibentuk dengan tangan membentuk segitiga di depan dada.',
-                            en: 'True or False: Letter A is formed by making a triangle in front of the chest.',
+                            id: 'Apakah gambar berikut merupakan contoh huruf BISINDO A?',
+                            en: 'Is the following image an example of the BISINDO letter A?',
                         },
+                        mediaUrl: 'https://res.cloudinary.com/dnn3mm02t/image/upload/lsn_a.jpg',
                         options: {
                             choices: [
-                                { key: 'true', id: 'Benar', en: 'True', image_url: null },
-                                { key: 'false', id: 'Salah', en: 'False', image_url: null },
+                                { key: 'true', id: 'Ya', en: 'Yes', image_url: null },
+                                { key: 'false', id: 'Tidak', en: 'No', image_url: null },
                             ],
                         },
                         correctAnswer: 'true',
@@ -73,10 +99,12 @@ export async function seedLevels() {
                     {
                         type: 'camera_practice',
                         questionText: {
-                            id: "Peragakan huruf 'A' di depan kamera dan tahan posisi sampai terdeteksi.",
-                            en: "Show letter 'A' in front of camera and hold position until detected.",
+                            id: "Peragakan huruf BISINDO A di depan kamera!",
+                            en: "Sign letter 'A' in front of camera!",
                         },
-                        options: null,
+                        options: {
+                            showHint: true,
+                        },
                         correctAnswer: 'A',
                         timeLimitSeconds: 25,
                         mediaUrl: defaultMediaUrl,
@@ -84,15 +112,26 @@ export async function seedLevels() {
                     {
                         type: 'camera_practice',
                         questionText: {
-                            id: "Eja rangkaian kartu huruf 'A-A-A' di depan kamera dengan memperagakan setiap huruf secara berurutan.",
-                            en: "Spell the letter cards 'A-A-A' in front of the camera by signing each letter in sequence.",
+                            id: "Sekali lagi! Peragakan huruf BISINDO A di depan kamera!",
+                            en: "Once again! Sign letter 'A' in front of camera!",
+                        },
+                        options: null,
+                        correctAnswer: 'A',
+                        timeLimitSeconds: 20,
+                        mediaUrl: defaultMediaUrl,
+                    },
+                    {
+                        type: 'camera_practice',
+                        questionText: {
+                            id: "Eja rangkaian huruf BISINDO berikut secara berurutan.",
+                            en: "Spell the following BISINDO letters in sequence.",
                         },
                         options: {
                             mode: 'spelling',
                             letters: ['A', 'A', 'A'],
                         },
                         correctAnswer: 'AAA',
-                        timeLimitSeconds: 45,
+                        timeLimitSeconds: 40,
                         mediaUrl: defaultMediaUrl,
                     },
                 ],

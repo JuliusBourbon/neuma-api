@@ -57,6 +57,8 @@ export async function getLevelDetail(levelId, userId) {
         description: level.description,
         minScoreToUnlockNext: level.minScoreToUnlockNext,
         materials: level.materials,
-        questions: level.questions.map(({ correctAnswer, ...q }) => q),
+        questions: level.questions.map(({ correctAnswer, ...q }) =>
+            q.type === 'camera_practice' ? { ...q, correctAnswer } : q
+        ),
     };
 }
