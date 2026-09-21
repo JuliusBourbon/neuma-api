@@ -2,7 +2,7 @@ import { prisma } from '../../db/prismaClient.js';
 import { ApiError } from '../../utils/ApiError.js';
 import { syncQuestProgress, incrementQuestProgress } from '../quests/questProgress.service.js';
 
-const TIME_TOLERANCE_SECONDS = 60;
+const TIME_TOLERANCE_SECONDS = 5; // Small buffer for network latency only
 
 const CAMERA_CONFIDENCE_THRESHOLD = 0.85;
 
