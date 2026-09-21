@@ -24,6 +24,7 @@ export async function getTopLeaderboard() {
         username: stat.user.username,
         avatar: stat.user.activeAvatar,
         totalXp: stat.totalXp,
+        wordsCollected: stat.wordsCollected,
     }));
 }
 
@@ -55,5 +56,6 @@ export async function getMyRank(userId) {
         username: myStats.user.username,
         avatar: myStats.user.activeAvatar,
         totalXp: myStats.totalXp,
+        wordsCollected: myStats.wordsCollected,
     };
 }
