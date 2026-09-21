@@ -19,6 +19,7 @@ export async function listLevelsForUser(userId) {
             orderIndex: level.orderIndex,
             title: level.title,
             description: level.description,
+            type: level.type,
             status: progress?.status ?? (level.orderIndex === 1 ? 'available' : 'locked'),
             bestScore: progress?.bestScore ?? 0,
         };
@@ -55,6 +56,7 @@ export async function getLevelDetail(levelId, userId) {
         id: level.id,
         title: level.title,
         description: level.description,
+        type: level.type,
         minScoreToUnlockNext: level.minScoreToUnlockNext,
         materials: level.materials,
         questions: level.questions.map(({ correctAnswer, ...q }) =>
