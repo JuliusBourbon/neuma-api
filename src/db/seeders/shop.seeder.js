@@ -1,27 +1,15 @@
 import { prisma } from '../prismaClient.js';
 
-export const shopItemData = [
-    {
-        name: { id: 'Kancil Pintar', en: 'Clever Mousedeer' },
-        imageUrl: 'https://api.dicebear.com/7.x/bottts/svg?seed=Kancil',
-        price: 50,
-    },
-    {
-        name: { id: 'Garuda Gagah', en: 'Mighty Garuda' },
-        imageUrl: 'https://api.dicebear.com/7.x/bottts/svg?seed=Garuda',
-        price: 100,
-    },
-    {
-        name: { id: 'Komodo Juara', en: 'Champion Komodo' },
-        imageUrl: 'https://api.dicebear.com/7.x/bottts/svg?seed=Komodo',
-        price: 200,
-    },
-    {
-        name: { id: 'Harimau Tangguh', en: 'Fierce Tiger' },
-        imageUrl: 'https://api.dicebear.com/7.x/bottts/svg?seed=Tiger',
-        price: 350,
-    },
-];
+export const shopItemData = Array.from({ length: 18 }).map((_, i) => {
+    const mascotNumber = i + 1;
+    // Set price progressively for demonstration (e.g. 50, 100, 150...)
+    const price = 50 * (Math.floor(i / 3) + 1); 
+    return {
+        name: { id: `Mascot ${mascotNumber}`, en: `Mascot ${mascotNumber}` },
+        imageUrl: `https://res.cloudinary.com/dnn3mm02t/image/upload/v1790034257/mascot_${mascotNumber}.png`,
+        price: price,
+    };
+});
 
 export async function seedShop() {
     console.log('[*] Seeding Shop Items (Avatars)...');
