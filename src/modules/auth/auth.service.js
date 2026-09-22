@@ -14,12 +14,24 @@ function buildTokens(user) {
     };
 }
 
-// Create new user with UserStats
+// Create new user with UserStats and default avatars
 async function createUserWithStats(data) {
+    const shopItems = await prisma.shopItem.findMany();
+    const mascot1 = shopItems.find(item => item.imageUrl.includes('mascot_1.png'));
+    const mascot2 = shopItems.find(item => item.imageUrl.includes('mascot_2.png'));
+
+    const inventoryData = [];
+    if (mascot1) inventoryData.push({ shopItemId: mascot1.id });
+    if (mascot2) inventoryData.push({ shopItemId: mascot2.id });
+
     return prisma.user.create({
         data: {
             ...data,
+            activeAvatarId: mascot1 ? mascot1.id : undefined,
             stats: { create: {} },
+            inventory: {
+                create: inventoryData
+            }
         },
     });
 }
