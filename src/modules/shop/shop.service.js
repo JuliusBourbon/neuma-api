@@ -1,5 +1,6 @@
 import { prisma } from "../../db/prismaClient.js";
 import { ApiError } from "../../utils/ApiError.js";
+import { incrementQuestProgress } from "../quests/questProgress.service.js";
 
 export async function listShopItemsForUser(userId) {
   const items = await prisma.shopItem.findMany();
@@ -20,7 +21,7 @@ export async function listShopItemsForUser(userId) {
 }
 
 export async function purchaseItem(userId, shopItemId) {
-  return prisma.$transaction(async (tx) => {
+  const result = await prisma.$transaction(async (tx) => {
     const item = await tx.shopItem.findUnique({
       where: { id: shopItemId },
     });
@@ -75,4 +76,8 @@ export async function purchaseItem(userId, shopItemId) {
       newCurrencyBalance: updatedStats.currencyBalance,
     };
   });
+
+  await incrementQuestProgress(userId, 'avatars_collected');
+
+  return result;
 }

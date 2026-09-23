@@ -200,11 +200,13 @@ export async function completeLevel(userId, levelId) {
         }
 
         if (isFirstPass) {
-            await incrementQuestProgress(userId, 'levels_completed');
+            const completedType = level.type === 'learning' ? 'learning_completed' : 'test_completed';
+            await incrementQuestProgress(userId, completedType);
         }
 
         if (scorePercentage === 100 && (!existingProgress || existingProgress.bestScore < 100)) {
-            await incrementQuestProgress(userId, 'perfect_scores');
+            const perfectType = level.type === 'learning' ? 'perfect_learning' : 'perfect_test';
+            await incrementQuestProgress(userId, perfectType);
         }
     }
 

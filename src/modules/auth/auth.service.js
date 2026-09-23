@@ -3,6 +3,7 @@ import { prisma } from '../../db/prismaClient.js';
 import { hashPassword, comparePassword } from '../../utils/password.js';
 import { signAccessToken, signRefreshToken } from '../../utils/token.js';
 import { ApiError } from '../../utils/ApiError.js';
+import { syncQuestProgress } from '../quests/questProgress.service.js';
 
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
@@ -24,7 +25,7 @@ async function createUserWithStats(data) {
     if (mascot1) inventoryData.push({ shopItemId: mascot1.id });
     if (mascot2) inventoryData.push({ shopItemId: mascot2.id });
 
-    return prisma.user.create({
+    const user = await prisma.user.create({
         data: {
             ...data,
             activeAvatarId: mascot1 ? mascot1.id : undefined,
@@ -34,6 +35,12 @@ async function createUserWithStats(data) {
             }
         },
     });
+
+    if (inventoryData.length > 0) {
+        await syncQuestProgress(user.id, 'avatars_collected', inventoryData.length);
+    }
+
+    return user;
 }
 
 export async function registerUser({ email, password, username }) {

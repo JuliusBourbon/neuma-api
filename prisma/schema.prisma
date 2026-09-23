@@ -45,10 +45,13 @@ enum QuestStatus {
 }
 
 enum QuestTargetType {
-  levels_completed
+  learning_completed
+  test_completed
+  perfect_learning
+  perfect_test
   streak_days
   words_collected
-  perfect_scores
+  avatars_collected
 }
 
 enum AttemptStatus {
