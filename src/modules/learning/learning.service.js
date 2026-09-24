@@ -4,7 +4,7 @@ import { syncQuestProgress, incrementQuestProgress } from '../quests/questProgre
 
 const TIME_TOLERANCE_SECONDS = 5; // Small buffer for network latency only
 
-const CAMERA_CONFIDENCE_THRESHOLD = 0.85;
+const CAMERA_CONFIDENCE_THRESHOLD = 0.15;
 
 // XP Given
 const XP_REWARD = {
