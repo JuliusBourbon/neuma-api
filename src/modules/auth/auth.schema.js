@@ -1,31 +1,69 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 export const registerSchema = z.object({
-    body: z.object({
-        email: z.string().email('Format email tidak valid.'),
-        password: z.string().min(8, 'Password minimal 8 karakter.'),
-        username: z.string().min(3).max(30).optional(),
-    }),
-    query: z.object({}).optional(),
-    params: z.object({}).optional(),
+  body: z.object({
+    email: z.string().email("Format email tidak valid."),
+    password: z.string().min(8, "Password minimal 8 karakter."),
+    username: z.string().min(3).max(30).optional(),
+  }),
+  query: z.object({}).optional(),
+  params: z.object({}).optional(),
 });
 
 export const loginSchema = z.object({
-    body: z.object({
-        email: z.string().email('Format email tidak valid.'),
-        password: z.string().min(1, 'Password wajib diisi.'),
-    }),
-    query: z.object({}).optional(),
-    params: z.object({}).optional(),
+  body: z.object({
+    email: z.string().email("Format email tidak valid."),
+    password: z.string().min(1, "Password wajib diisi."),
+  }),
+  query: z.object({}).optional(),
+  params: z.object({}).optional(),
 });
 
 export const googleAuthSchema = z.object({
-    body: z.object({
-        idToken: z.string().optional(),
-        accessToken: z.string().optional(),
-    }).refine((data) => Boolean(data.idToken || data.accessToken), {
-        message: 'Google ID token atau access token wajib disertakan.',
+  body: z
+    .object({
+      idToken: z.string().optional(),
+      accessToken: z.string().optional(),
+    })
+    .refine((data) => Boolean(data.idToken || data.accessToken), {
+      message: "Google ID token atau access token wajib disertakan.",
     }),
-    query: z.object({}).optional(),
-    params: z.object({}).optional(),
+  query: z.object({}).optional(),
+  params: z.object({}).optional(),
+});
+
+export const setPasswordSchema = z.object({
+  body: z
+    .object({
+      newPassword: z.string().min(8, "Password baru minimal 8 karakter."),
+
+      confirmPassword: z.string().min(1, "Konfirmasi password wajib diisi."),
+    })
+    .refine((data) => data.newPassword === data.confirmPassword, {
+      message: "Konfirmasi password tidak cocok.",
+      path: ["confirmPassword"],
+    }),
+
+  query: z.object({}).optional(),
+
+  params: z.object({}).optional(),
+});
+
+export const changePasswordSchema = z.object({
+  body: z
+    .object({
+      oldPassword: z.string().min(1, "Password lama wajib diisi."),
+
+      newPassword: z.string().min(8, "Password baru minimal 8 karakter."),
+
+      confirmPassword: z.string().min(1, "Konfirmasi password wajib diisi."),
+    })
+    .refine((data) => data.newPassword === data.confirmPassword, {
+      message: "Konfirmasi password tidak cocok.",
+      path: ["confirmPassword"],
+    }),
+
+  query: z.object({}).optional(),
+
+  params: z.object({}).optional(),
 });
