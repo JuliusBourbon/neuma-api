@@ -2686,10 +2686,9 @@ export async function seedLevels() {
                 ],
             },
         },
-        // 21
-        // Level 22: Uji Pemahaman 6
+        // Level 21: Uji Pemahaman 6
         {
-            orderIndex: 22,
+            orderIndex: 21,
             type: 'test',
             title: { id: 'Uji Pemahaman 6', en: 'Comprehension Test 6' },
             description: {
