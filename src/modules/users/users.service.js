@@ -3,7 +3,11 @@ import { ApiError } from "../../utils/ApiError.js";
 
 function sanitizeUser(user) {
   const { passwordHash, ...safeUser } = user;
-  return safeUser;
+
+  return {
+    ...safeUser,
+    hasPassword: Boolean(passwordHash),
+  };
 }
 
 export async function getUserProfile(userId) {
