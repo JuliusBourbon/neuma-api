@@ -48,10 +48,16 @@ export async function updateUserProfile(userId, updates) {
   return sanitizeUser(user);
 }
 
-export async function completeOnboarding(userId) {
+export async function completeOnboarding(userId, preferredLanguage) {
   const user = await prisma.user.update({
     where: { id: userId },
-    data: { onboardingCompleted: true },
+    data: {
+      preferredLanguage,
+      onboardingCompleted: true,
+    },
+    include: {
+      activeAvatar: true,
+    },
   });
 
   return sanitizeUser(user);
