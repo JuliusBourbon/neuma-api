@@ -3,7 +3,9 @@ import { ApiError } from "../../utils/ApiError.js";
 import { incrementQuestProgress } from "../quests/questProgress.service.js";
 
 export async function listShopItemsForUser(userId) {
-  const items = await prisma.shopItem.findMany();
+  const items = await prisma.shopItem.findMany({
+    orderBy: { price: 'asc' },
+  });
 
   const inventory = await prisma.userInventory.findMany({
     where: { userId },
