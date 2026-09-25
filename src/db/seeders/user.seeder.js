@@ -12,8 +12,8 @@ export async function seedUsers() {
 
     const dummyUsersData = [
         {
-            email: 'siti_nur@neuma.id',
-            username: 'Siti_Nur',
+            email: 'rosso@gmail.com',
+            username: 'Rosso',
             totalXp: 480,
             currencyBalance: 250,
             dayStreak: 7,
@@ -21,8 +21,8 @@ export async function seedUsers() {
             avatarIndex: shopItems.length > 2 ? 2 : null,
         },
         {
-            email: 'budi_santoso@neuma.id',
-            username: 'BudiSantoso',
+            email: 'martini@gmail.com',
+            username: 'Martini',
             totalXp: 380,
             currencyBalance: 180,
             dayStreak: 5,
@@ -30,8 +30,8 @@ export async function seedUsers() {
             avatarIndex: shopItems.length > 1 ? 1 : null,
         },
         {
-            email: 'andi_wijaya@neuma.id',
-            username: 'AndiWijaya',
+            email: 'vermouth@gmail.com',
+            username: 'Vermouth',
             totalXp: 290,
             currencyBalance: 120,
             dayStreak: 4,
@@ -39,8 +39,8 @@ export async function seedUsers() {
             avatarIndex: shopItems.length > 0 ? 0 : null,
         },
         {
-            email: 'rina_kartika@neuma.id',
-            username: 'RinaKartika',
+            email: 'whiskey@gmail.com',
+            username: 'Whiskey',
             totalXp: 210,
             currencyBalance: 90,
             dayStreak: 3,
@@ -48,8 +48,8 @@ export async function seedUsers() {
             avatarIndex: null,
         },
         {
-            email: 'fajar_ramadhan@neuma.id',
-            username: 'FajarR',
+            email: 'gin@gmail.com',
+            username: 'Gin',
             totalXp: 140,
             currencyBalance: 60,
             dayStreak: 2,
@@ -57,8 +57,8 @@ export async function seedUsers() {
             avatarIndex: null,
         },
         {
-            email: 'dewi_lestari@neuma.id',
-            username: 'DewiLestari',
+            email: 'liquor@gmail.com',
+            username: 'Liquor',
             totalXp: 60,
             currencyBalance: 20,
             dayStreak: 1,
