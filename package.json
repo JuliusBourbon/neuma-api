@@ -8,7 +8,8 @@
     "start": "node src/app.js",
     "prisma:migrate": "prisma migrate dev",
     "prisma:generate": "prisma generate",
-    "prisma:seed": "node src/db/seeders/index.js"
+    "prisma:seed": "node src/db/seeders/index.js",
+    "postinstall": "prisma generate"
   },
   "prisma": {
     "seed": "node src/db/seeders/index.js"
