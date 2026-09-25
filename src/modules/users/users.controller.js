@@ -1,4 +1,18 @@
 import * as usersService from "./users.service.js";
+import { listLevelsForUser } from "../levels/levels.service.js";
+
+export async function getHomeData(req, res, next) {
+  try {
+    const [user, stats, levels] = await Promise.all([
+      usersService.getUserProfile(req.userId),
+      usersService.getUserStats(req.userId),
+      listLevelsForUser(req.userId),
+    ]);
+    res.status(200).json({ success: true, data: { user, stats, levels } });
+  } catch (err) {
+    next(err);
+  }
+}
 
 export async function getMe(req, res, next) {
   try {
