@@ -10,6 +10,7 @@ const router = Router();
 router.use(requireAuth);
 
 router.get('/me', usersController.getMe);
+router.get('/me/home', usersController.getHomeData);
 router.patch('/me', validate(updateProfileSchema), usersController.updateMe);
 router.patch('/me/onboarding', validate(completeOnboardingSchema), usersController.completeOnboarding);
 router.get('/me/stats', usersController.getMyStats);
