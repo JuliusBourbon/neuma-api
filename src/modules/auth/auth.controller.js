@@ -6,9 +6,9 @@ function setRefreshCookie(res, token) {
   res.cookie(REFRESH_COOKIE_NAME, token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     maxAge: 7 * 24 * 60 * 60 * 1000,
-    path: "/api/auth",
+    path: "/",
   });
 }
 
@@ -125,6 +125,6 @@ export async function changePassword(req, res, next) {
 }
 
 export function logout(req, res) {
-  res.clearCookie(REFRESH_COOKIE_NAME, { path: "/api/auth" });
+  res.clearCookie(REFRESH_COOKIE_NAME, { path: "/" });
   res.status(200).json({ success: true, message: "Berhasil logout." });
 }
